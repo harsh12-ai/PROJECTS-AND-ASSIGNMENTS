@@ -1,0 +1,539 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+
+    \usepackage{iftex}
+    \ifPDFTeX
+        \usepackage[T1]{fontenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
+    \else
+        \usepackage{fontspec}
+        \usepackage{unicode-math}
+    \fi
+
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{array}     % table support for pandoc >= 2.11.3
+    \usepackage{calc}      % table minipage width calculation for pandoc >= 2.11.1
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{soul}      % strikethrough (\st) support for pandoc >= 3.0.0
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+
+
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{Untitled1}
+    
+    
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb.
+    \makeatletter
+        \newbox\Wrappedcontinuationbox
+        \newbox\Wrappedvisiblespacebox
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}}
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}}
+        \newcommand*\Wrappedcontinuationindent {3ex }
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox}
+        % Take advantage of the already applied Pygments mark-up to insert
+        % potential linebreaks for TeX processing.
+        %        {, <, #, %, $, ' and ": go to next line.
+        %        _, }, ^, &, >, - and ~: stay at end of broken line.
+        % Use of \textquotesingle for straight quote.
+        \newcommand*\Wrappedbreaksatspecials {%
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}%
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}%
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}%
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}%
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}%
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}%
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}%
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}%
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}%
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}%
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}%
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}%
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}%
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}%
+        }
+        % Some characters . , ; ? ! / are not pygmentized.
+        % This macro makes them "active" and they will insert potential linebreaks
+        \newcommand*\Wrappedbreaksatpunct {%
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}%
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}%
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}%
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}%
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}%
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}%
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}%
+            \catcode`\.\active
+            \catcode`\,\active
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active
+            \lccode`\~`\~
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{Q}\PY{l+m+mf}{.1} \PY{n}{Explain} \PY{n}{the} \PY{n}{key} \PY{n}{features} \PY{n}{of} \PY{n}{Python} \PY{n}{that} \PY{n}{make} \PY{n}{it} \PY{n}{a} \PY{n}{popular} \PY{n}{choice} \PY{k}{for} 
+\PY{n}{programming}\PY{o}{.} 
+\PY{n}{A}\PY{l+m+mf}{.1} \PY{n}{Python} \PY{o+ow}{is} \PY{n}{popular} \PY{n}{due} \PY{n}{to} \PY{n}{several} \PY{n}{key} \PY{n}{features}\PY{p}{:} 
+\PY{o}{\PYZhy{}} \PY{n}{Easy} \PY{n}{to} \PY{n}{Learn} \PY{o+ow}{and} \PY{n}{Use}\PY{p}{:} \PY{n}{Python} \PY{n}{has} \PY{n}{a} \PY{n}{simple} \PY{n}{syntax} \PY{n}{similar} \PY{n}{to} \PY{n}{English}\PY{p}{,} \PY{n}{which} \PY{n}{makes} \PY{n}{it} \PY{n}{easy} 
+\PY{n}{to} \PY{n}{read} \PY{o+ow}{and} \PY{n}{write}\PY{o}{.} 
+\PY{o}{\PYZhy{}} \PY{n}{Interpreted} \PY{n}{Language}\PY{p}{:} \PY{n}{Python} \PY{n}{code} \PY{o+ow}{is} \PY{n}{executed} \PY{n}{line} \PY{n}{by} \PY{n}{line}\PY{p}{,} \PY{n}{making} \PY{n}{debugging} \PY{n}{easier}\PY{o}{.} 
+\PY{o}{\PYZhy{}} \PY{n}{Dynamically} \PY{n}{Typed}\PY{p}{:} \PY{n}{You} \PY{n}{don}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{t need to declare the type of a variable; the interpreter }
+\PY{n}{determines} \PY{n}{it} \PY{n}{at} \PY{n}{runtime}\PY{o}{.} 
+\PY{o}{\PYZhy{}} \PY{n}{Extensive} \PY{n}{Standard} \PY{n}{Library}\PY{p}{:} \PY{n}{Python} \PY{n}{has} \PY{n}{a} \PY{n}{vast} \PY{n}{standard} \PY{n}{library} \PY{n}{that} \PY{n}{supports} \PY{n}{many} 
+\PY{n}{common} \PY{n}{tasks}\PY{p}{,} \PY{n}{reducing} \PY{n}{the} \PY{n}{need} \PY{k}{for} \PY{n}{writing} \PY{n}{code} \PY{k+kn}{from} \PY{n+nn}{scratch}\PY{n+nn}{.} 
+\PY{o}{\PYZhy{}} \PY{n}{Cross}\PY{o}{\PYZhy{}}\PY{n}{Platform}\PY{p}{:} \PY{n}{Python} \PY{n}{can} \PY{n}{run} \PY{n}{on} \PY{n}{various} \PY{n}{operating} \PY{n}{systems}\PY{p}{,} \PY{n}{making} \PY{n}{it} \PY{n}{a} \PY{n}{versatile} \PY{n}{choice}\PY{o}{.} 
+\PY{o}{\PYZhy{}} \PY{n}{Community} \PY{n}{Support}\PY{p}{:} \PY{n}{Python} \PY{n}{has} \PY{n}{a} \PY{n}{large} \PY{n}{community}\PY{p}{,} \PY{n}{providing} \PY{n}{a} \PY{n}{wealth} \PY{n}{of} \PY{n}{resources} \PY{o+ow}{and} 
+\PY{n}{support}\PY{o}{.} 
+\PY{o}{\PYZhy{}} \PY{n}{Object}\PY{o}{\PYZhy{}}\PY{n}{Oriented}\PY{p}{:} \PY{n}{Python} \PY{n}{supports} \PY{n+nb}{object}\PY{o}{\PYZhy{}}\PY{n}{oriented} \PY{n}{programming}\PY{p}{,} \PY{n}{which} \PY{n}{promotes} \PY{n}{code} 
+\PY{n}{reuse} \PY{o+ow}{and} \PY{n}{modularity}\PY{o}{.} 
+
+\PY{n}{Q}\PY{l+m+mf}{.2} \PY{n}{Describe} \PY{n}{the} \PY{n}{role} \PY{n}{of} \PY{n}{predefined} \PY{n}{keywords} \PY{o+ow}{in} \PY{n}{Python} \PY{o+ow}{and} \PY{n}{provide} 
+\PY{n}{examples} \PY{n}{of} \PY{n}{how} \PY{n}{they} \PY{n}{are} \PY{n}{used} \PY{o+ow}{in} \PY{n}{a} \PY{n}{program}\PY{o}{.} 
+\PY{n}{A}\PY{l+m+mf}{.2} \PY{n}{Predefined} \PY{n}{keywords} \PY{o+ow}{in} \PY{n}{Python} \PY{n}{are} \PY{n}{reserved} \PY{n}{words} \PY{n}{that} \PY{n}{have} \PY{n}{special} \PY{n}{meanings}\PY{o}{.} \PY{n}{They} 
+\PY{n}{cannot} \PY{n}{be} \PY{n}{used} \PY{k}{as} \PY{n}{identifiers} \PY{p}{(}\PY{n}{variable} \PY{n}{names}\PY{p}{,} \PY{n}{function} \PY{n}{names}\PY{p}{,} \PY{n}{etc}\PY{o}{.}\PY{p}{)}\PY{o}{.} \PY{n}{Examples} \PY{n}{include} \PY{k}{if}\PY{p}{,} 
+\PY{k}{else}\PY{p}{,} \PY{k}{while}\PY{p}{,} \PY{k}{for}\PY{p}{,} \PY{k}{break}\PY{p}{,} \PY{k}{continue}\PY{p}{,} \PY{n}{class}\PY{p}{,} \PY{n}{def}\PY{p}{,} \PY{k}{return}\PY{p}{,} \PY{n}{import}\PY{p}{,} \PY{o+ow}{and} \PY{n}{many} \PY{n}{more}\PY{o}{.} 
+\PY{n}{Example}\PY{p}{:} 
+\PY{k}{if} \PY{k+kc}{True}\PY{p}{:} 
+ \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{This is true}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)} 
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{:} 
+ \PY{n+nb}{print}\PY{p}{(}\PY{n}{i}\PY{p}{)} 
+\PY{k}{def} \PY{n+nf}{my\PYZus{}function}\PY{p}{(}\PY{p}{)}\PY{p}{:} 
+ \PY{k}{return} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Hello, World!}\PY{l+s+s2}{\PYZdq{}} 
+\PY{k}{class} \PY{n+nc}{MyClass}\PY{p}{:} 
+ \PY{k}{pass} 
+\PY{n}{Q}\PY{l+m+mf}{.3} \PY{n}{Compare} \PY{o+ow}{and} \PY{n}{contrast} \PY{n}{mutable} \PY{o+ow}{and} \PY{n}{immutable} \PY{n}{objects} \PY{o+ow}{in} \PY{n}{Python} \PY{k}{with} 
+\PY{n}{examples}\PY{o}{.} 
+\PY{n}{A}\PY{l+m+mf}{.3} 
+\PY{o}{\PYZhy{}} \PY{n}{Mutable} \PY{n}{Objects}\PY{p}{:} \PY{n}{Can} \PY{n}{be} \PY{n}{changed} \PY{n}{after} \PY{n}{their} \PY{n}{creation}\PY{o}{.} \PY{n}{Examples} \PY{n}{include} \PY{n}{lists}\PY{p}{,} \PY{n}{dictionaries}\PY{p}{,} 
+\PY{o+ow}{and} \PY{n}{sets}\PY{o}{.} 
+\PY{o}{\PYZhy{}} \PY{n}{Immutable} \PY{n}{Objects}\PY{p}{:} \PY{n}{Cannot} \PY{n}{be} \PY{n}{changed} \PY{n}{after} \PY{n}{their} \PY{n}{creation}\PY{o}{.} \PY{n}{Examples} \PY{n}{include} \PY{n}{integers}\PY{p}{,} 
+\PY{n}{floats}\PY{p}{,} \PY{n}{strings}\PY{p}{,} \PY{o+ow}{and} \PY{n}{tuples}\PY{o}{.} 
+\PY{n}{Example}\PY{p}{:} 
+\PY{c+c1}{\PYZsh{} Mutable object (list) }
+\PY{n}{my\PYZus{}list} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{]} 
+\PY{n}{my\PYZus{}list}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{)} 
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{my\PYZus{}list}\PY{p}{)} \PY{c+c1}{\PYZsh{} Output: [1, 2, 3, 4] }
+\PY{c+c1}{\PYZsh{} Immutable object (string) }
+\PY{n}{my\PYZus{}string} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Hello}\PY{l+s+s2}{\PYZdq{}} 
+\PY{c+c1}{\PYZsh{} my\PYZus{}string[0] = \PYZsq{}h\PYZsq{} \PYZsh{} This would raise an error }
+\PY{n}{new\PYZus{}string} \PY{o}{=} \PY{n}{my\PYZus{}string}\PY{o}{.}\PY{n}{replace}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{H}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{h}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)} 
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{new\PYZus{}string}\PY{p}{)} \PY{c+c1}{\PYZsh{} Output: \PYZdq{}hello\PYZdq{} }
+
+
+\PY{n}{Q}\PY{l+m+mf}{.4} \PY{n}{Discuss} \PY{n}{the} \PY{n}{different} \PY{n}{types} \PY{n}{of} \PY{n}{operators} \PY{o+ow}{in} \PY{n}{Python} \PY{o+ow}{and} \PY{n}{provide} 
+\PY{n}{examples} \PY{n}{of} \PY{n}{how} \PY{n}{they} \PY{n}{are} \PY{n}{used}\PY{o}{.} 
+\PY{n}{A}\PY{l+m+mf}{.4}
+\PY{o}{\PYZhy{}} \PY{n}{Arithmetic} \PY{n}{Operators}\PY{p}{:} \PY{o}{+}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{p}{,} \PY{o}{*}\PY{p}{,} \PY{o}{/}\PY{p}{,} \PY{o}{/}\PY{o}{/}\PY{p}{,} \PY{o}{\PYZpc{}}\PY{p}{,} \PY{o}{*}\PY{o}{*} 
+\PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{5} \PY{o}{+} \PY{l+m+mi}{3}\PY{p}{)} \PY{c+c1}{\PYZsh{} Addition }
+\PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{5} \PY{o}{\PYZhy{}} \PY{l+m+mi}{3}\PY{p}{)} \PY{c+c1}{\PYZsh{} Subtraction }
+\PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{5} \PY{o}{*} \PY{l+m+mi}{3}\PY{p}{)} \PY{c+c1}{\PYZsh{} Multiplication }
+\PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{5} \PY{o}{/} \PY{l+m+mi}{3}\PY{p}{)} \PY{c+c1}{\PYZsh{} Division }
+\PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{5} \PY{o}{/}\PY{o}{/} \PY{l+m+mi}{3}\PY{p}{)} \PY{c+c1}{\PYZsh{} Floor Division }
+\PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{5} \PY{o}{\PYZpc{}} \PY{l+m+mi}{3}\PY{p}{)} \PY{c+c1}{\PYZsh{} Modulus }
+\PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{5} \PY{o}{*}\PY{o}{*} \PY{l+m+mi}{3}\PY{p}{)} \PY{c+c1}{\PYZsh{} Exponent }
+\PY{o}{\PYZhy{}} \PY{n}{Comparison} \PY{n}{Operators}\PY{p}{:} \PY{o}{==}\PY{p}{,} \PY{o}{!=}\PY{p}{,} \PY{o}{\PYZgt{}}\PY{p}{,} \PY{o}{\PYZlt{}}\PY{p}{,} \PY{o}{\PYZgt{}}\PY{o}{=}\PY{p}{,} \PY{o}{\PYZlt{}}\PY{o}{=} 
+\PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{5} \PY{o}{==} \PY{l+m+mi}{3}\PY{p}{)} \PY{c+c1}{\PYZsh{} Equal to }
+\PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{5} \PY{o}{!=} \PY{l+m+mi}{3}\PY{p}{)} \PY{c+c1}{\PYZsh{} Not equal to }
+\PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{5} \PY{o}{\PYZgt{}} \PY{l+m+mi}{3}\PY{p}{)} \PY{c+c1}{\PYZsh{} Greater than }
+\PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{5} \PY{o}{\PYZlt{}} \PY{l+m+mi}{3}\PY{p}{)} \PY{c+c1}{\PYZsh{} Less than }
+\PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{5} \PY{o}{\PYZgt{}}\PY{o}{=} \PY{l+m+mi}{3}\PY{p}{)} \PY{c+c1}{\PYZsh{} Greater than or equal to }
+\PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{5} \PY{o}{\PYZlt{}}\PY{o}{=} \PY{l+m+mi}{3}\PY{p}{)} \PY{c+c1}{\PYZsh{} Less than or equal to }
+\PY{o}{\PYZhy{}} \PY{n}{Logical} \PY{n}{Operators}\PY{p}{:} \PY{o+ow}{and}\PY{p}{,} \PY{o+ow}{or}\PY{p}{,} \PY{o+ow}{not} 
+\PY{n+nb}{print}\PY{p}{(}\PY{k+kc}{True} \PY{o+ow}{and} \PY{k+kc}{False}\PY{p}{)} \PY{c+c1}{\PYZsh{} Logical AND }
+\PY{n+nb}{print}\PY{p}{(}\PY{k+kc}{True} \PY{o+ow}{or} \PY{k+kc}{False}\PY{p}{)} \PY{c+c1}{\PYZsh{} Logical OR }
+\PY{n+nb}{print}\PY{p}{(}\PY{o+ow}{not} \PY{k+kc}{True}\PY{p}{)} \PY{c+c1}{\PYZsh{} Logical NOT }
+\PY{o}{\PYZhy{}} \PY{n}{Bitwise} \PY{n}{Operators}\PY{p}{:} \PY{o}{\PYZam{}}\PY{p}{,} \PY{o}{|}\PY{p}{,} \PY{o}{\PYZca{}}\PY{p}{,} \PY{o}{\PYZti{}}\PY{p}{,} \PY{o}{\PYZlt{}\PYZlt{}}\PY{p}{,} \PY{o}{\PYZgt{}\PYZgt{}} 
+\PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{5} \PY{o}{\PYZam{}} \PY{l+m+mi}{3}\PY{p}{)} \PY{c+c1}{\PYZsh{} Bitwise AND }
+\PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{5} \PY{o}{|} \PY{l+m+mi}{3}\PY{p}{)} \PY{c+c1}{\PYZsh{} Bitwise OR }
+\PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{5} \PY{o}{\PYZca{}} \PY{l+m+mi}{3}\PY{p}{)} \PY{c+c1}{\PYZsh{} Bitwise XOR }
+\PY{n+nb}{print}\PY{p}{(}\PY{o}{\PYZti{}}\PY{l+m+mi}{5}\PY{p}{)} \PY{c+c1}{\PYZsh{} Bitwise NOT }
+\PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{5} \PY{o}{\PYZlt{}\PYZlt{}} \PY{l+m+mi}{1}\PY{p}{)} \PY{c+c1}{\PYZsh{} Bitwise left shift }
+\PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{5} \PY{o}{\PYZgt{}\PYZgt{}} \PY{l+m+mi}{1}\PY{p}{)} \PY{c+c1}{\PYZsh{} Bitwise right shift }
+
+
+\PY{n}{Q}\PY{l+m+mf}{.5} \PY{n}{Explain} \PY{n}{the} \PY{n}{concept} \PY{n}{of} \PY{n+nb}{type} \PY{n}{casting} \PY{o+ow}{in} \PY{n}{Python} \PY{k}{with} \PY{n}{examples}\PY{o}{.} 
+\PY{n}{A}\PY{l+m+mf}{.5}
+\PY{n}{Type} \PY{n}{casting} \PY{o+ow}{is} \PY{n}{converting} \PY{n}{one} \PY{n}{data} \PY{n+nb}{type} \PY{n}{to} \PY{n}{another}\PY{o}{.} \PY{n}{Python} \PY{n}{provides} \PY{n}{several} \PY{n}{built}\PY{o}{\PYZhy{}}\PY{o+ow}{in} 
+\PY{n}{functions} \PY{k}{for} \PY{n+nb}{type} \PY{n}{casting}\PY{p}{,} \PY{n}{such} \PY{k}{as} \PY{n+nb}{int}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n+nb}{float}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{o+ow}{and} \PY{n+nb}{list}\PY{p}{(}\PY{p}{)}\PY{o}{.} 
+\PY{n}{Example}\PY{p}{:} 
+\PY{c+c1}{\PYZsh{} Converting string to integer }
+\PY{n}{num\PYZus{}str} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{123}\PY{l+s+s2}{\PYZdq{}} 
+\PY{n}{num\PYZus{}int} \PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{n}{num\PYZus{}str}\PY{p}{)} 
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{num\PYZus{}int}\PY{p}{)} \PY{c+c1}{\PYZsh{} Output: 123 }
+\PY{c+c1}{\PYZsh{} Converting integer to string }
+\PY{n}{num} \PY{o}{=} \PY{l+m+mi}{123} 
+\PY{n}{num\PYZus{}str} \PY{o}{=} \PY{n+nb}{str}\PY{p}{(}\PY{n}{num}\PY{p}{)} 
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{num\PYZus{}str}\PY{p}{)} \PY{c+c1}{\PYZsh{} Output: \PYZdq{}123\PYZdq{} }
+\PY{c+c1}{\PYZsh{} Converting list to tuple }
+\PY{n}{my\PYZus{}list} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{]} 
+\PY{n}{my\PYZus{}tuple} \PY{o}{=} \PY{n+nb}{tuple}\PY{p}{(}\PY{n}{my\PYZus{}list}\PY{p}{)} 
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{my\PYZus{}tuple}\PY{p}{)} \PY{c+c1}{\PYZsh{} Output: (1, 2, 3) }
+
+
+\PY{n}{Q}\PY{l+m+mf}{.6} \PY{n}{How} \PY{n}{do} \PY{n}{conditional} \PY{n}{statements} \PY{n}{work} \PY{o+ow}{in} \PY{n}{Python}\PY{err}{?} \PY{n}{Illustrate} \PY{k}{with} 
+\PY{n}{example}\PY{o}{.} 
+\PY{n}{A}\PY{l+m+mf}{.6}
+\PY{n}{Conditional} \PY{n}{statements} \PY{o+ow}{in} \PY{n}{Python} \PY{n}{allow} \PY{n}{you} \PY{n}{to} \PY{n}{execute} \PY{n}{code} \PY{n}{based} \PY{n}{on} \PY{n}{certain} \PY{n}{conditions} 
+\PY{n}{using} \PY{k}{if}\PY{p}{,} \PY{k}{elif}\PY{p}{,} \PY{o+ow}{and} \PY{k}{else}\PY{o}{.} 
+\PY{n}{Example}\PY{p}{:} 
+\PY{n}{age} \PY{o}{=} \PY{l+m+mi}{18} 
+\PY{k}{if} \PY{n}{age} \PY{o}{\PYZlt{}} \PY{l+m+mi}{18}\PY{p}{:} 
+ \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{You are a minor.}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)} 
+\PY{k}{elif} \PY{n}{age} \PY{o}{==} \PY{l+m+mi}{18}\PY{p}{:} 
+ \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{You are exactly 18 years old.}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)} 
+\PY{k}{else}\PY{p}{:} 
+ \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{You are an adult.}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)} 
+
+
+\PY{n}{Q}\PY{l+m+mf}{.7} \PY{n}{Describe} \PY{n}{the} \PY{n}{different} \PY{n}{types} \PY{n}{of} \PY{n}{loops} \PY{o+ow}{in} \PY{n}{Python} \PY{o+ow}{and} \PY{n}{their} \PY{n}{use} \PY{n}{cases} 
+\PY{k}{with} \PY{n}{examples}\PY{o}{.}
+\PY{n}{A}\PY{l+m+mf}{.7}
+\PY{o}{\PYZhy{}} \PY{k}{for} \PY{n}{Loop}\PY{p}{:} \PY{n}{Iterates} \PY{n}{over} \PY{n}{a} \PY{n}{sequence} \PY{p}{(}\PY{n}{like} \PY{n}{a} \PY{n+nb}{list}\PY{p}{,} \PY{n+nb}{tuple}\PY{p}{,} \PY{n}{dictionary}\PY{p}{,} \PY{n+nb}{set}\PY{p}{,} \PY{o+ow}{or} \PY{n}{string}\PY{p}{)}\PY{o}{.} 
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{)}\PY{p}{:} 
+ \PY{n+nb}{print}\PY{p}{(}\PY{n}{i}\PY{p}{)} \PY{c+c1}{\PYZsh{} Output: 0 1 2 3 4 }
+\PY{o}{\PYZhy{}} \PY{k}{while} \PY{n}{Loop}\PY{p}{:} \PY{n}{Repeats} \PY{k}{as} \PY{n}{long} \PY{k}{as} \PY{n}{a} \PY{n}{condition} \PY{o+ow}{is} \PY{n}{true}\PY{o}{.} 
+\PY{n}{count} \PY{o}{=} \PY{l+m+mi}{0} 
+\PY{k}{while} \PY{n}{count} \PY{o}{\PYZlt{}} \PY{l+m+mi}{5}\PY{p}{:} 
+ \PY{n+nb}{print}\PY{p}{(}\PY{n}{count}\PY{p}{)} 
+ \PY{n}{count} \PY{o}{+}\PY{o}{=} \PY{l+m+mi}{1} \PY{c+c1}{\PYZsh{} Output: 0 1 2 3 4 }
+\PY{o}{\PYZhy{}} \PY{k}{break} \PY{o+ow}{and} \PY{k}{continue}\PY{p}{:} \PY{n}{Control} \PY{n}{the} \PY{n}{loop}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{s execution. }
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{)}\PY{p}{:} 
+ \PY{k}{if} \PY{n}{i} \PY{o}{==} \PY{l+m+mi}{3}\PY{p}{:} 
+ \PY{k}{break} \PY{c+c1}{\PYZsh{} Exit the loop }
+ \PY{n+nb}{print}\PY{p}{(}\PY{n}{i}\PY{p}{)} \PY{c+c1}{\PYZsh{} Output: 0 1 2 }
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{)}\PY{p}{:} 
+ \PY{k}{if} \PY{n}{i} \PY{o}{==} \PY{l+m+mi}{3}\PY{p}{:} 
+ \PY{k}{continue} \PY{c+c1}{\PYZsh{} Skip the rest of the code inside loop for this iteration }
+ \PY{n+nb}{print}\PY{p}{(}\PY{n}{i}\PY{p}{)} \PY{c+c1}{\PYZsh{} Output: 0 1 2 4}
+\end{Verbatim}
+\end{tcolorbox}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
